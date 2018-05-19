@@ -54,23 +54,16 @@ export default {
           itemsRef = db.ref('items/' + vm.user.uid);
 
           itemsRef.once('value').then(function(snapshot) {
-              var name = (snapshot.val() && snapshot.val().name) || 'Anonymous';
+            console.log(snapshot.val());
               for (var key in snapshot.val()) {
-                  // vm.items.push(snapshot.val()[key]['name']);
-                  var element = snapshot.val()[key];
+                  var element = {};
+                  element.name = snapshot.val()[key];
                   element.key = key;
                   vm.items.push(element);
               }
-});
-          
-          // db.collection('items/' + vm.user.uid).get().then((querySnapshot) => {
-          //   querySnapshot.forEach((doc) => {
-              
-          //     this.contacts.push(doc.data().name)
-          //   })
-          // })
-          //  vm.items = itemsRef;
-                         }
+          });
+        
+        }
     });
   },
   methods: {
@@ -78,9 +71,7 @@ export default {
       firebase.auth().signOut();
     },
      addItem () {
-        itemsRef.push({
-          name: this.item
-        }).then(() => {
+        itemsRef.push(this.item).then(() => {
           this.item = ''
         })  
         location.reload()
